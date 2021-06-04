@@ -1,0 +1,14 @@
+{
+    "apps": {
+        "Youtube": {
+            "name": "YouTube",
+            "url": "https://www.youtube.com/",
+            "logo": "assets/logos/youtube.png"
+        },
+        "Reddit": {
+            "name": "Reddit",
+            "url": "https://www.reddit.com/",
+            "logo": "assets/logos/reddit.png"
+        }
+    }
+}
