@@ -10,7 +10,7 @@
 body {
     background-color: black;
 }
-p {
+.text_output {
     color: rgb(0, 255, 0);
 }
 
@@ -33,3 +33,4 @@ p {
 #cmd {
     visibility: hidden;
 }
+

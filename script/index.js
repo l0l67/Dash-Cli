@@ -1,8 +1,26 @@
 window.onload=function(){
     globalThis.drawing = false;
     after_btn();
+    load_config();
     //drawtext(document.getElementById('headline').innerHTML);
 }
+
+
+
+function load_config() {
+    globalThis.config_apps = {};
+    for(var key in config) {
+        for(app in config[key]) {
+            config_apps[config[key][app]["name"].toString().toLowerCase()] = config[key][app]["url"] + ";" + config[key][app]["description"];
+        }
+    }
+    var childs = document.getElementsByClassName('text_output');
+    for (var i = 0; i < childs.length; i++) {
+        childs[i].style.color = color;
+    } 
+
+}
+
 
 function delay(n){
     return new Promise(function(resolve){
@@ -24,7 +42,6 @@ async function drawtext(text_to_draw) {
     
     for(i = 0; i < text_to_draw.length; i++) {
         already_drawn += text_to_draw[i];
-        console.log(text_to_draw[i], "!!!!!!!!!!!!");
         document.getElementById('headline').innerText = already_drawn;
         /*
         if(text_to_draw[i] != " ") {
@@ -38,7 +55,7 @@ async function drawtext(text_to_draw) {
             }
         }
         */
-        await delay(0);
+        await delay(10);
     }
     drawing = false;
 }
@@ -70,7 +87,10 @@ var cmd_list = {
     clear: "clears the screen",
     info: "prints the about page",
     dir: "displays files in the current directory(only this one right now)",
-    cat: '"cat filename" Simple text viewer'
+    cat: '"cat filename" Simple text viewer',
+    ls: "lists all your configured apps",
+    start: '"start appname" starts an app -newtab -> start in a new tab',
+    man: '"man appname" print info about app or all apps(with * as appname)'
 }
 
 var dir_list = {
@@ -86,25 +106,20 @@ window["passwords"] = `abcdefghijklmnopqrstuvwxyz0123456789`;
 document.addEventListener('keydown', function(event) {
     console.log(event.keyCode);
     try{
-        console.log(syntax);
+        //console.log(syntax);
     } catch(ReferenceError) {
         globalThis.syntax = "C:\\>";
     }
     if(!drawing) {
-        console.log("-------")
         if(first_time_start) {
-            //tmp = syntax.split("C:\\>");
-            //console.log(tmp, "tmp");
             drawtext(" ");
-            //drawcmd(tmp[0]);
-            //syntax = tmp[0];
             first_time_start = false;
         }
 
         globalThis.typing = true;
         document.getElementById('cmd').style.visibility = "visible";
-        var audio1 = new Audio("assets/sounds/tipping.mp3");
-        audio1.play();
+        //var audio1 = new Audio("assets/sounds/tipping.mp3");
+        //audio1.play();
         switch(event.keyCode) {
             //letters:
             case 65:
@@ -269,6 +284,11 @@ document.addEventListener('keydown', function(event) {
                 drawcmd(syntax);
                 break;
 
+            case 106:
+            case 171:
+                syntax += "*";
+                drawcmd(syntax);
+                break;
 
             //special keys like enter, ...
             case 32: //space
@@ -323,6 +343,63 @@ document.addEventListener('keydown', function(event) {
                             }
 
                             break;
+
+                        case "ls":
+                            let app_names = [];
+                            for(app in config_apps) {
+                                app_names.push(app + "\n");
+                            }
+                            drawtext(app_names.toString().replaceAll(",",""));
+                            break;
+
+                            
+
+
+
+                        case "start":
+                            console.log(command[1])
+                            var tmp_val = config_apps[command[1]];
+                            tmp_val = tmp_val.split(";");
+                            var url = tmp_val[0];
+
+                            var opts = command[2];
+                            console.log(opts);
+                            switch(command[2]) {
+                                case "-newtab":
+                                    window.open(url, "_blank");
+                                    break;
+                                case undefined:
+                                case "-here":
+                                    window.open(url, "_self");
+                                    break;
+                            }
+                            
+
+
+                            
+                            break;
+
+                        case "man":
+                            
+                            if(command[1] != "*") {
+                                var desc_tmp = config_apps[command[1]];
+                                desc_tmp = desc_tmp.split(";");
+                                var desc = desc_tmp[1];
+                                drawtext(command[1] + ": " + desc);
+                            } else {
+                                let app_names = [];
+                                for(app in config_apps) {
+                                    var tmpp = config_apps[app].split(";");
+                                    tmpp = tmpp[1];
+                                    app_names.push(app + ": " + tmpp + "\n");
+                                }
+                                drawtext(app_names.toString().replaceAll(",",""));
+                            }
+                            
+                            break;
+
+
+
 
                         case "exit":
                             //window.location.reload(true);

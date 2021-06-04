@@ -1,14 +1,15 @@
-{
+color = "rgb(0,255,0)";
+config = {
     "apps": {
         "Youtube": {
             "name": "YouTube",
             "url": "https://www.youtube.com/",
-            "logo": "assets/logos/youtube.png"
+            "description": "Its YouTube..."
         },
         "Reddit": {
             "name": "Reddit",
             "url": "https://www.reddit.com/",
-            "logo": "assets/logos/reddit.png"
+            "description": "Its Reddit..."
         }
     }
-}
+};
