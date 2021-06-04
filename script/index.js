@@ -2,10 +2,9 @@ window.onload=function(){
     globalThis.drawing = false;
     after_btn();
     load_config();
+    load_timer();
     //drawtext(document.getElementById('headline').innerHTML);
 }
-
-
 
 function load_config() {
     globalThis.config_apps = {};
@@ -14,7 +13,7 @@ function load_config() {
             config_apps[config[key][app]["name"].toString().toLowerCase()] = config[key][app]["url"] + ";" + config[key][app]["description"];
         }
     }
-    var childs = document.getElementsByClassName('text_output');
+    var childs = document.getElementsByClassName('text');
     for (var i = 0; i < childs.length; i++) {
         childs[i].style.color = color;
     } 
@@ -22,11 +21,27 @@ function load_config() {
 }
 
 
+
 function delay(n){
     return new Promise(function(resolve){
         setTimeout(resolve,n);
     });
 }
+
+async function load_timer() { 
+    globalThis.blink_state = 0;
+    for(var blink_state = 0; blink_state < 2; blink_state++) {
+        await delay(250);
+    }
+    if(blink_state >= 2) {
+        blink();
+        load_timer();
+    }
+}
+
+
+
+
 
 function randomChoice(arr) {
     return arr[Math.floor(arr.length * Math.random())];
@@ -72,15 +87,45 @@ String.prototype.replaceAll = function(str1, str2, ignore) {
 
 async function after_btn() {
     if(!drawing) {
-        document.getElementById('btn').style.visibility = "hidden"; //for space \xa0
+        document.getElementById('btn').style.visibility = "hidden"; 
         globalThis.syntax = `Welcome to Dash-cli...
                     Loading....
-                                        
-                    C:\\>`;
+                    `;  //for space \xa0
         drawtext(syntax);
-        globalThis.first_time_start = true;
+        syntax = "C:\\>";
+        drawcmd(syntax);
+        document.getElementById('cmd').style.visibility = "visible";
     }
 }
+
+var state = 0;
+function blink() {
+    if(!drawing) {
+        console.log("blink");
+        if(state == 0) {
+            document.getElementById('cursor').style.visibility = "visible";
+            state = 1;
+        }else{
+            document.getElementById('cursor').style.visibility = "hidden";
+            state = 0;
+        }
+        
+    }
+}
+
+function search_google(term, opts) {
+    var base_url = "https://duckduckgo.com/?q=";
+    switch (opts) {
+        case "-newtab":
+            window.open(base_url + term, "_blank");
+            break;
+        case "-here":
+        default:
+            window.open(base_url + term, "_self");
+            break;
+    } 
+}
+
 
 var cmd_list = {
     help: "prints this menu",
@@ -90,6 +135,7 @@ var cmd_list = {
     cat: '"cat filename" Simple text viewer',
     ls: "lists all your configured apps",
     start: '"start appname" starts an app -newtab -> start in a new tab',
+    search: '"search somewordtosearch -newtab" -> search the internet',
     man: '"man appname" print info about app or all apps(with * as appname)'
 }
 
@@ -111,10 +157,6 @@ document.addEventListener('keydown', function(event) {
         globalThis.syntax = "C:\\>";
     }
     if(!drawing) {
-        if(first_time_start) {
-            drawtext(" ");
-        }
-
         globalThis.typing = true;
         document.getElementById('cmd').style.visibility = "visible";
         //var audio1 = new Audio("assets/sounds/tipping.mp3");
@@ -302,7 +344,6 @@ document.addEventListener('keydown', function(event) {
             case 8: //backspace
                 let tmp = [];
                 
-                //if(first_time_start) {
                 tmp = syntax.split("C:");
                 if(tmp[1].length > 2) {
                     try{
@@ -313,7 +354,6 @@ document.addEventListener('keydown', function(event) {
                         
                     globalThis.syntax = tmp[0] + "C:" + tmp[1];
                 }
-                first_time_start = false;
 
                 drawcmd(syntax);
                 break;
@@ -367,7 +407,16 @@ document.addEventListener('keydown', function(event) {
                             break;
 
                             
+                        case "search":
+                            var search_term = command.slice(1, -1);
+                            for(var i=0;i<search_term.length;i++){
+                                search_term[i]="+"+search_term[i];
+                            }
 
+                            search_term = search_term.toString().replaceAll(",","");
+
+                            search_google(search_term, command[command.length - 1].toString());
+                            break;
 
 
                         case "start":
@@ -459,7 +508,6 @@ document.addEventListener('keydown', function(event) {
                 drawcmd(syntax);
                 break;
         }
-        first_time_start = false;
     } else {
         //document.getElementById('cmd').style.visibility = "hidden";
     }

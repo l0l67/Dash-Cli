@@ -32,5 +32,11 @@ body {
 
 #cmd {
     visibility: hidden;
+    float: left;
 }
 
+#cursor {
+    visibility: hidden;
+    float: left;
+    color: white;
+}
