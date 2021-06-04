@@ -113,7 +113,6 @@ document.addEventListener('keydown', function(event) {
     if(!drawing) {
         if(first_time_start) {
             drawtext(" ");
-            first_time_start = false;
         }
 
         globalThis.typing = true;
@@ -289,6 +288,11 @@ document.addEventListener('keydown', function(event) {
                 syntax += "*";
                 drawcmd(syntax);
                 break;
+            case 173:
+                syntax += "-";
+                drawcmd(syntax);
+                break;
+            
 
             //special keys like enter, ...
             case 32: //space
@@ -296,11 +300,21 @@ document.addEventListener('keydown', function(event) {
                 drawcmd(syntax);
                 break;
             case 8: //backspace
-                let tmp = syntax.split(/(?!$)/);
-                if(tmp.length > 4) {
-                    tmp.pop();
+                let tmp = [];
+                
+                //if(first_time_start) {
+                tmp = syntax.split("C:");
+                if(tmp[1].length > 2) {
+                    try{
+                        tmp[1] = tmp[1].toString().slice(0, -1);
+                    } catch {
+                        tmp.pop();
+                    }
+                        
+                    globalThis.syntax = tmp[0] + "C:" + tmp[1];
                 }
-                globalThis.syntax = tmp.join("");
+                first_time_start = false;
+
                 drawcmd(syntax);
                 break;
             case 13: //enter
@@ -368,8 +382,10 @@ document.addEventListener('keydown', function(event) {
                                 case "-newtab":
                                     window.open(url, "_blank");
                                     break;
-                                case undefined:
                                 case "-here":
+                                    window.open(url, "_self");
+                                    break;
+                                default:
                                     window.open(url, "_self");
                                     break;
                             }
@@ -444,9 +460,11 @@ document.addEventListener('keydown', function(event) {
                 globalThis.syntax = "C:\\>";
                 drawcmd(syntax);
                 break;
+            
         }
+        first_time_start = false;
     } else {
-        document.getElementById('cmd').style.visibility = "hidden";
+        //document.getElementById('cmd').style.visibility = "hidden";
     }
     typing = false;
 });
