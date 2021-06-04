@@ -460,7 +460,6 @@ document.addEventListener('keydown', function(event) {
                 globalThis.syntax = "C:\\>";
                 drawcmd(syntax);
                 break;
-            
         }
         first_time_start = false;
     } else {
