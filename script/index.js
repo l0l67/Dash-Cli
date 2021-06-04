@@ -88,9 +88,7 @@ String.prototype.replaceAll = function(str1, str2, ignore) {
 async function after_btn() {
     if(!drawing) {
         document.getElementById('btn').style.visibility = "hidden"; 
-        globalThis.syntax = `Welcome to Dash-cli...
-                    Loading....
-                    `;  //for space \xa0
+        globalThis.syntax = start_msg; //get start_msg from config.js
         drawtext(syntax);
         syntax = "C:\\>";
         drawcmd(syntax);
@@ -131,6 +129,7 @@ var cmd_list = {
     help: "prints this menu",
     clear: "clears the screen",
     info: "prints the about page",
+    ascii: "prints ascii art configured in config.js",
     dir: "displays files in the current directory(only this one right now)",
     cat: '"cat filename" Simple text viewer',
     ls: "lists all your configured apps",
@@ -498,6 +497,9 @@ document.addEventListener('keydown', function(event) {
                                 Ascii art from: https://www.asciiart.eu/
 
                             `);
+                            break;
+                        case "ascii":
+                            drawtext(ascii); //gets ascii from config.js
                             break;
                     }
                 } else {
