@@ -422,7 +422,7 @@ document.addEventListener('keydown', function(event) {
                             break;
                         case "info":
                             drawtext(`
-                                This Website is just a test, some commands will be added in the future.
+                                This Website is just a test to teach myself javascript, some commands will be added in the future.
                                 Dont expect anything from this lol
 
 
@@ -448,14 +448,12 @@ document.addEventListener('keydown', function(event) {
 
                                 Ascii art from: https://www.asciiart.eu/
 
-
                             `);
                             break;
                     }
                 } else {
                     drawtext("Command not found.");
                 }
-
 
                 globalThis.syntax = "C:\\>";
                 drawcmd(syntax);
